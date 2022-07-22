@@ -11,19 +11,23 @@ namespace DerivcoDeveloperAssessment.Controllers
     public class PlayController : ControllerBase
     {
         ILogger<PlayController> logger;
+        IBetService betService;
+        IRouletteService rouletteService; 
         IUserService userService;
-        public PlayController(ILogger<PlayController> logger, IUserService userService)
+        public PlayController(ILogger<PlayController> logger, IBetService betService,IRouletteService rouletteService, IUserService userService)
         {
             this.logger = logger;
+            this.betService = betService;
+            this.rouletteService = rouletteService;
             this.userService = userService;
         }
 
         // GET: api/<PlayController>
-        [HttpGet("PlaceBet")]
+        [HttpPost("PlaceBet")]
         public async Task<IActionResult> PlaceBet(BetModel bet)
         {
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            var result = await betService.PlaceBet(bet);
+            return Ok(result);
         }
 
         // GET api/<PlayController>/5
@@ -39,17 +43,19 @@ namespace DerivcoDeveloperAssessment.Controllers
         [HttpGet("Spin")]
         public async Task<IActionResult> Spin()
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            var result= await rouletteService.Spin();
+            return Ok(result);
         }
 
         // DELETE api/<PlayController>/5
-        [HttpGet("Payout")]
+        [HttpPost("Payout")]
         public void Payout(UserModel user)
         {
+            var result = betService.Payout(user);
         }
 
         // DELETE api/<PlayController>/5
-        [HttpGet("ShowPreviousSpins")]
+        [HttpPost("ShowPreviousSpins")]
         public void ShowPreviousSpins(UserModel user)
         {
         }

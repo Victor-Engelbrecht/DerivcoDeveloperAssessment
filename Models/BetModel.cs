@@ -8,8 +8,10 @@ namespace Models
 {
     public class BetModel
     {
+        public int BetId { get; set; }
+        public int SpinId { get; set; }
         public int UserId { get; set; }
-        public string Name { get; set; } 
         public double Amount { get; set; }
+        public bool Payed { get; set; } = false;
     }
 }

@@ -74,6 +74,25 @@ namespace DataAccess
         }
 
         /// <summary>
+        /// Insert values into a table
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <param name="columns"></param>
+        /// <param name="values"></param>
+        /// <param name="parameters"></param>
+        /// <param name="connectionId"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> Insert<T,U>(string table, string columns, string values, U parameters, string connectionId = "Default")
+        {
+            using IDbConnection connection = new SQLiteConnection(configuration.GetConnectionString(connectionId));
+            await connection.QueryAsync("INSERT INTO " + table + " (" + columns + ") " +
+                "VALUES(" + values + "); ", parameters, commandType: CommandType.Text);
+            var result =await connection.QueryAsync<T>("SELECT * FROM " + table + " ORDER BY SpinId DESC LIMIT 1");
+            return result;
+        }
+
+        /// <summary>
         /// Update a table
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -147,7 +166,7 @@ namespace DataAccess
         /// <param name="parameters"></param>
         /// <param name="connectionId"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> SQLQuery<T>(string SQL, T parameters, string connectionId = "Default")
+        public async Task<IEnumerable<T>> SQLQuery<T,U>(string SQL, U parameters, string connectionId = "Default")
         {
             using IDbConnection connection = new SQLiteConnection(configuration.GetConnectionString(connectionId));
             var result = await connection.QueryAsync<T>(SQL, parameters, commandType: CommandType.Text);

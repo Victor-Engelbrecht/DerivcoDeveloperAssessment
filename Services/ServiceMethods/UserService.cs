@@ -31,7 +31,7 @@ namespace Services.ServiceMethods
 
         public async Task<bool> DeleteUser(UserModel userModel)
         {
-            var result = await _db.Delete("Users", "Name", "@Name", userModel);
+            var result = await _db.Delete("Users", "UserId", "@UserId", userModel);
             return result;
         }
 
@@ -46,6 +46,7 @@ namespace Services.ServiceMethods
             
         }
 
+        //Just a test to learn how to do the
         public async Task<int> Add(int number1, int number2) 
         {
             return await Task.Run(() => number1 + number2);
