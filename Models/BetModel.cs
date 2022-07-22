@@ -12,6 +12,7 @@ namespace Models
         public int SpinId { get; set; }
         public int UserId { get; set; }
         public double Amount { get; set; }
-        public bool Payed { get; set; } = false;
+        public bool Paid { get; set; } = false;
+        public int BetOnNumber { get; set; }
     }
 }

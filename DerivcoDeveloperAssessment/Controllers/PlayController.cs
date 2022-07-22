@@ -26,6 +26,7 @@ namespace DerivcoDeveloperAssessment.Controllers
         [HttpPost("PlaceBet")]
         public async Task<IActionResult> PlaceBet(BetModel bet)
         {
+
             var result = await betService.PlaceBet(bet);
             return Ok(result);
         }

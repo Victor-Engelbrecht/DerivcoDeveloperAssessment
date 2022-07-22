@@ -18,15 +18,22 @@ namespace Services.ServiceMethods
 
         public async Task<bool> PlaceBet(BetModel betModel)
         {
-            var result = await _db.Insert("Bets", "Amount, UserId", "@Amount, @UserId", betModel);
+            var result = await _db.Insert("Bets", "Amount, UserId, BetOnNumber", "@Amount, @UserId, @BetOnNumber", betModel);
             return result;
         }
 
         public async Task<int> Payout(UserModel user)
         {
-            var result = await _db.SQLQuery<int, UserModel>("SELECT SUM(Amount) FROM Bets WHERE UserId=@UserId AND Payed=0",user);
-
-            return result.FirstOrDefault();
+            var result = await _db.SQLQuery<int, UserModel>("SELECT SUM(Amount) FROM Bets WHERE UserId=@UserId AND Paid=0",user);
+            if (result.Any())
+            {
+                if (await _db.Update("Bets", "Paid=1", "UserId=@UserId", user))
+                {
+                    return result.FirstOrDefault();
+                }
+                throw new Exception("Could not gets update bets data to paid");
+            }
+            return 0;
         }
     }
 }

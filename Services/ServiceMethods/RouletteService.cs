@@ -18,18 +18,20 @@ namespace Services.ServiceMethods
 
         public async Task<int> Spin()
         {
+            //TODO:
+            //This should suffice for adding data ons spins for now though all the logic for a spin should most likely move here sicne it doesn't tell the user if they have won or not
+            //Logic get number... insert into SpinsTable... update BetTable... Get bet result for all current bets... Send bets result and quantity won/lost to users
             Random random = new Random();
-            SpinModel model = new SpinModel() {
+            SpinModel spinResult = new SpinModel(){
                 Value = random.Next(0, 37) 
             };
-            var result = await _db.Insert<SpinModel, SpinModel>("Spins", "Value", "@Value", model);
-            if (result.Any())
+            var insertSuccessResult = await _db.Insert<SpinModel, SpinModel>("Spins", "Value", "@Value", spinResult);
+            if (insertSuccessResult.Any())
             {
-                if (await _db.Update("Bets", "SpinId=" + result.ToList().FirstOrDefault(), "SpinId = IS NULL", "NUll"))
+                if (await _db.Update("Bets", "SpinId=" + insertSuccessResult.ToList().FirstOrDefault().SpinId, "SpinId IS NULL", "NUll"))
                 {
-                    return model.Value;
+                    return spinResult.Value;
                 }
-
                 throw new Exception("Could not update bets with current spin");
             }
             throw new Exception("Could not add spin to the database");
